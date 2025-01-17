@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using AktivCA.Application.Contracts.certificate.dto;
 
 namespace AktivCA.Application.Contracts.Certificate
@@ -11,6 +7,6 @@ namespace AktivCA.Application.Contracts.Certificate
     {
         public Task Request(CmsRequest request);
         public Task RequestIntermediate(CmsRequest request);
-        public Task Validate(string sertId);
+        public CertValidationResult Validate(CertPem pem);
     }
 }

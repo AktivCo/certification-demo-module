@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using AktivCA.Application.Contracts.certificate.dto;
 using AktivCA.Application.Contracts.Certificate;
 using AktivCA.Application.Contracts.setting;
+using AktivCA.Domain.certificate;
 using AktivCA.Domain.settings;
 using AktivCA.Domain.Shared.AutoReg;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AktivCA.Application.Certificate
 {
@@ -19,9 +15,12 @@ namespace AktivCA.Application.Certificate
     public class CertificateAppService : Controller, ICertificateAppService, ITransientAppService
     {
         private readonly IMapper _mapper;
-        public CertificateAppService(IMapper mapper)
+        private readonly ICertificateService _certService;
+
+        public CertificateAppService(IMapper mapper, ICertificateService certService)
         {
             _mapper = mapper;
+            _certService = certService;
         }
    
         [Route("request")]
@@ -31,21 +30,18 @@ namespace AktivCA.Application.Certificate
             throw new NotImplementedException(); 
         }
 
-        [Route("requestintermediate")]
+        [Route("request-intermediate")]
         [HttpPost]
         public Task RequestIntermediate(CmsRequest request)
         {
             throw new NotImplementedException();
         }
 
-        [Route("validate/{sertId}")]
-        [HttpGet]
-        public Task Validate(string sertId)
+        [Route("validate")]
+        [HttpPost]
+        public CertValidationResult Validate([FromBody] CertPem model)
         {
-            var test = new SettingDto() {Id = 1, Cert="testCert", PrivateKey = "PrivateKey", PublicKey = "PublicKey" };
-            var testResult = _mapper.Map<Setting>(test);
-            throw new NotImplementedException();
+            return _certService.Validate(model.Pem);
         }
-
     }
 }

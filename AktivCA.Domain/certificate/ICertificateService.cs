@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AktivCA.Application.Contracts.certificate.dto
 
 namespace AktivCA.Domain.certificate
 {
     public interface ICertificateService
     {
+        CertValidationResult Validate(string certPem);
     }
 }
