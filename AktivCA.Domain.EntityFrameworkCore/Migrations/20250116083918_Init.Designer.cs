@@ -24,7 +24,7 @@ namespace AktivCA.Domain.EntityFrameworkCore.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AktivCA.Domain.settings.Setting", b =>
+            modelBuilder.Entity("AktivCA.Domain.Settings.Setting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

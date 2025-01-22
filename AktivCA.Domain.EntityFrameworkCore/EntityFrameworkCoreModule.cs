@@ -10,11 +10,6 @@ namespace AktivCA.Domain.EntityFrameworkCore
 {
     public class EntityFrameworkCoreModule:ApplicationModuleBase, IApplicationModuleBase
     {
-        protected IServiceProvider _services;
-        public EntityFrameworkCoreModule(IServiceProvider services)
-        {
-            _services = services;
-        }
         public override void Init()
         {
         }

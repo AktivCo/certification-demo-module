@@ -1,12 +1,14 @@
 ﻿
-using AktivCA.Application.Contracts.certificate.dto;
+using AktivCA.Application.Contracts.Certificate.Dto;
+using Org.BouncyCastle.Pkcs;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AktivCA.Application.Contracts.Certificate
 {
     public interface ICertificateAppService
     {
-        public Task Request(CmsRequest request);
-        public Task RequestIntermediate(CmsRequest request);
-        public CertValidationResult Validate(CertPem pem);
+        public Task<PemContainerDto> Request(PemContainerDto request);
+        public CertValidationResultDto Validate(PemContainerDto pem);
+        public Task<PemContainerDto> RequestIntermediate(PemContainerDto request);
     }
 }

@@ -1,19 +1,14 @@
 using System.Reflection;
-using System.Xml.Linq;
 using AktivCA.Application;
-using AktivCA.Application.Certificate;
-using AktivCA.Application.Contracts.Certificate;
 using AktivCA.Domain;
+using AktivCA.Domain.CAApi;
 using AktivCA.Domain.EntityFrameworkCore;
 using AktivCA.Domain.EntityFrameworkCore.EntityFrameworkCore;
 using AktivCA.Domain.Shared.AutoReg;
+using AktivCA.Domain.Shared.Configuration;
 using AktivCA.Domain.Shared.Module;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 
 namespace AktivCA.Web
@@ -24,8 +19,9 @@ namespace AktivCA.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
             ConfigureServices(builder.Services);
+            ConfigureAutoMapper(builder.Services);
             RegisterServices(builder.Services);
             RegisterDBServices(builder.Services);
 
@@ -59,7 +55,7 @@ namespace AktivCA.Web
                 options.RoutePrefix = string.Empty;
             });
 
-            InitModules(app);
+            InitModules(app.Services, builder.Services);
 
             app.Run();
 
@@ -68,7 +64,6 @@ namespace AktivCA.Web
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(ApplicationModule).Assembly);
             services.AddControllersWithViews();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -77,15 +72,20 @@ namespace AktivCA.Web
             services.AddControllers()
                 .ConfigureApplicationPartManager(apm => apm.ApplicationParts.Add(part));
         }
-
-        private static void InitModules(WebApplication app)
+        private static void ConfigureAutoMapper(IServiceCollection services)
         {
-            using (var scope = app.Services.CreateScope())
+            services.AddAutoMapper(typeof(ApplicationModule).Assembly);
+        }
+
+        private static void InitModules(IServiceProvider serviceProvider, IServiceCollection serviceCollection)
+        {
+            using (var scope = serviceProvider.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var modules = services.GetServices<IApplicationModuleBase>();
                 foreach (var module in modules)
                 {
+                    module.Init(serviceCollection);
                     module.Init();
                 }
             }
@@ -94,20 +94,25 @@ namespace AktivCA.Web
         private static void RegisterDBServices(IServiceCollection services)
         {
             var configuration = BuildConfiguration();
+
             services.AddDbContext<AktivCADbContext>(config => config.UseNpgsql(configuration.GetConnectionString("Default")));
+
+            var certParamsSection = configuration.GetSection("CertificateParams");
+
+            services.Configure<CertificateParams>(certParamsSection);
+
+            services
+                .AddHttpClient<ICAApiService, CAApiService>(httpClient =>
+                {
+                    httpClient.BaseAddress = certParamsSection.GetValue<Uri>(nameof(CertificateParams.CaUrl));
+                });
         }
 
         private static void RegisterServices(IServiceCollection services)
         {
             RegisterTransientServicesAsImplementedInterfaces<IApplicationModuleBase>(services, registeredModules);
-
-            RegisterTransientServices<ITransientAppService>(services, registeredModules);
             RegisterTransientServices<ITransientService>(services, registeredModules);
-
-            RegisterSingletonServices<ISingletonAppService>(services, registeredModules);
             RegisterSingletonServices<ISingletonService>(services, registeredModules);
-
-            RegisterScopedServices<IScopedAppService>(services, registeredModules);
             RegisterScopedServices<IScopedService>(services, registeredModules);
         }
 
@@ -152,5 +157,16 @@ namespace AktivCA.Web
 
             return builder.Build();
         }
+
+        public static IServiceProvider TestImplementation(IServiceCollection serviceCollection)
+        {
+            ConfigureAutoMapper(serviceCollection);
+            RegisterServices(serviceCollection);
+            RegisterDBServices(serviceCollection);
+            var provider = serviceCollection.BuildServiceProvider();
+            //InitModules(provider);
+            return provider;
+        }
+
     }
 }

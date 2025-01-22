@@ -1,12 +1,7 @@
 
-namespace AktivCA.Application.Contracts.certificate.dto
+namespace AktivCA.Application.Contracts.Certificate.Dto
 {
-    public class CertPem
-    {
-        public string? Pem { get; set; }
-    }
-
-    public class CertValidationResult
+    public class CertValidationResultDto
     {
         public bool IsValid { get; set; }
         public string? Reason { get; set; }

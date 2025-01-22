@@ -10,5 +10,6 @@ namespace AktivCA.Domain.Shared.Module
     public interface IApplicationModuleBase
     {
         public void Init();
+        public void Init(IServiceCollection serviceCollection);
     }
 }

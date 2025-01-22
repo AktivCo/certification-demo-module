@@ -1,5 +1,4 @@
-﻿
-namespace AktivCA.Application.Contracts.certificate.dto
+namespace AktivCA.Domain.Shared.Module
 {
     public class CmsRequest
     {

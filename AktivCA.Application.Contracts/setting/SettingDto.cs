@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AktivCA.Application.Contracts.setting
+namespace AktivCA.Application.Contracts.Setting
 {
     public class SettingDto
     {

@@ -1,4 +1,4 @@
-﻿using AktivCA.Domain.settings;
+﻿using AktivCA.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 
 namespace AktivCA.Domain.EntityFrameworkCore.EntityFrameworkCore

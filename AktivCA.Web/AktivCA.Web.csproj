@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>3b02a9ea-7d4e-4b06-b1bc-0b3fb788d044</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,6 +36,7 @@
     <ProjectReference Include="..\AktivCA.Application.Contracts\AktivCA.Application.Contracts.csproj" />
     <ProjectReference Include="..\AktivCA.Application\AktivCA.Application.csproj" />
     <ProjectReference Include="..\AktivCA.Domain.EntityFrameworkCore\AktivCA.Domain.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\AktivCA.Domain.Shared\AktivCA.Domain.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

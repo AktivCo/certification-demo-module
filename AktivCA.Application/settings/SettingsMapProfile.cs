@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AktivCA.Application.Contracts.setting;
-using AktivCA.Domain.settings;
+using AktivCA.Application.Contracts.Setting;
+using AktivCA.Domain.Settings;
 using AktivCA.Application.Base;
 
-namespace AktivCA.Application.settings
+namespace AktivCA.Application.Settings
 {
     public class SettingsMapProfile : AutoMapper.Profile
     {
