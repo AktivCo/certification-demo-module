@@ -19,6 +19,8 @@ namespace AktivCA.Application.Certificate
         {
             CreateMap<CertValidationResult, CertValidationResultDto>();
             CreateMap<CertValidationResultDto, CertValidationResult>();
+            CreateMap<PemCertResponseContainer, PemCertResponseContainerDto>();
+            CreateMap<PemCertResponseContainerDto, PemCertResponseContainer>();
         }
     }
 }

@@ -1,10 +1,9 @@
-using AktivCA.Domain.Shared.Module;
-using Org.BouncyCastle.Pkcs;
+using AktivCA.Domain.Shared.Certificate;
 
 namespace AktivCA.Domain.CAApi
 {
     public interface ICAApiService
     {
-        Task<string> CreateCertAsync(string cmsRequest);
+        Task<PemCertResponseContainer> CreateCertAsync(string cmsRequest);
     }
 }

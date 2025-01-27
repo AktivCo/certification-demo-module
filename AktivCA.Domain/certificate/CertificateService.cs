@@ -37,7 +37,7 @@ namespace AktivCA.Domain.Certificate
             _keyPairService = keyPairService;
         }
 
-        public async Task<Pkcs10CertificationRequest> GetCertRequestFromCmsString(string сms)
+        public Pkcs10CertificationRequest GetCertRequestFromCmsString(string сms)
         {
             Pkcs10CertificationRequest request;
 
@@ -211,7 +211,7 @@ namespace AktivCA.Domain.Certificate
         {
             var userCert = X509Certificate2.CreateFromPem(certPem);
             var settings = _settingProvider.GetSettingsAsync().Result;
-            var issuerCert = X509Certificate2.CreateFromPem(settings.Cert);
+            var issuerCert = X509Certificate2.CreateFromPem(settings.CaCert);
 
             var chain = new X509Chain();
             chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;

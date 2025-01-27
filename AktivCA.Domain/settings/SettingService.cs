@@ -46,11 +46,15 @@ namespace AktivCA.Domain.Settings
                 if (_appSettings.Value.IsRootCa)
                 {
                     X509Certificate2 cert = _certificateService.GenerateCertCA(keyPair);
-                    settings.Cert = cert.ExportCertificatePem();
+                    var certString = cert.ExportCertificatePem();
+                    settings.Cert = certString;
+                    settings.CaCert = certString;
                 }
                 else {
                     var request = _certificateService.GeneratePemCertRequest(keyPair, _appSettings.Value.Name);
-                    settings.Cert = _cAApiService.CreateCertAsync(request).Result;
+                    var result = _cAApiService.CreateCertAsync(request).Result;
+                    settings.Cert = result.Pem;
+                    settings.CaCert = result.CaPem;
                 }
 
                 await _settingProvider.CreateSettingsAsync(settings);

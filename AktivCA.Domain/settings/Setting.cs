@@ -11,5 +11,6 @@ namespace AktivCA.Domain.Settings
         public string PublicKey { get; set; }
         public string PrivateKey { get; set; }
         public string Cert { get; set; }
+        public string CaCert { get; set; }
     }
 }

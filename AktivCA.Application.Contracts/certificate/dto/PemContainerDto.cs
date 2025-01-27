@@ -12,4 +12,11 @@ namespace AktivCA.Application.Contracts.Certificate.Dto
         [Required]
         public string Pem { get; set; }
     }
+    public class PemCertResponseContainerDto
+    {
+        [Required]
+        public string Pem { get; set; }
+        [Required]
+        public string CaPem { get; set; }
+    }
 }

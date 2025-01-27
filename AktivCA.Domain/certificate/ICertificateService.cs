@@ -8,7 +8,7 @@ namespace AktivCA.Domain.Certificate
     public interface ICertificateService
     {
         public CertValidationResult Validate(string certPem);
-        public Task<Pkcs10CertificationRequest> GetCertRequestFromCmsString(string сms);
+        public Pkcs10CertificationRequest GetCertRequestFromCmsString(string сms);
         public X509Certificate2 GenerateCertCA(AsymmetricCipherKeyPair keyPair);
         public X509Certificate2 GenerateCertByRequest(Pkcs10CertificationRequest request);
         public X509Certificate2 GenerateChildCertByRequest(Pkcs10CertificationRequest request);

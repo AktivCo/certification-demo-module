@@ -18,31 +18,34 @@ namespace AktivCA.Application.Certificate
     {
         private readonly IMapper _mapper;
         private readonly ICertificateService _certificateService;
+        private readonly ISettingService _settingService;
         public CertificateAppService(
-            IMapper mapper, ICertificateService certificateService)
+            IMapper mapper, ICertificateService certificateService, ISettingService settingService)
         {
             _mapper = mapper;
             _certificateService = certificateService;
+            _settingService = settingService;
         }
    
         [Route("request")]
         [HttpPost]
         public async Task<PemContainerDto> Request([FromBody] PemContainerDto request)
         {
-            var certRequest = await _certificateService.GetCertRequestFromCmsString(request.Pem);
+            var certRequest = _certificateService.GetCertRequestFromCmsString(request.Pem);
             var cert = _certificateService.GenerateChildCertByRequest(certRequest);
             var pemCert = cert.ExportCertificatePem();
             return new PemContainerDto() { Pem = pemCert };
         }
-      
+
         [Route("request-intermediate")]
         [HttpPost]
-        public async Task<PemContainerDto> RequestIntermediate([FromBody] PemContainerDto request)
+        public async Task<PemCertResponseContainerDto> RequestIntermediate([FromBody] PemContainerDto request)
         {
-            var certRequest = await _certificateService.GetCertRequestFromCmsString(request.Pem);
+            var certRequest = _certificateService.GetCertRequestFromCmsString(request.Pem);
             var cert = _certificateService.GenerateCertByRequest(certRequest);
             var pemCert = cert.ExportCertificatePem();
-            return new PemContainerDto() {Pem= pemCert };
+            var settings = await _settingService.GetSettings();
+            return new PemCertResponseContainerDto() { Pem = pemCert, CaPem = settings.CaCert };
         }
 
         [Route("validate")]

@@ -11,15 +11,15 @@ namespace AktivCA.Domain.CAApi
 {
     public class CAApiService(HttpClient httpClient) : ICAApiService
     {
-        public async Task<string> CreateCertAsync(string cmsRequest)
+        public async Task<PemCertResponseContainer> CreateCertAsync(string cmsRequest)
         {
             using var httpResponseMessage =
                 await httpClient.PostAsJsonAsync("/certificate/request-intermediate", new PemContainer() { Pem = cmsRequest });
 
             httpResponseMessage.EnsureSuccessStatusCode();
 
-            var result = await httpResponseMessage.Content.ReadFromJsonAsync<PemContainer>();
-            return result.Pem;
+            var result = await httpResponseMessage.Content.ReadFromJsonAsync<PemCertResponseContainer>();
+            return result;
         }
     }
 }

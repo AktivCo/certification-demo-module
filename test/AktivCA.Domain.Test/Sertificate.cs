@@ -27,7 +27,7 @@ A0EALtxP0wh1QZsHa7xxVyVEtZkhC85XRuUA5ggTeNO83sY4fW/ZM8WZmQ+ZsUFf
 bqklF9K5r/QQfGhzmSPNChayeQ==
 -----END NEW CERTIFICATE REQUEST-----";
 
-            var result = certificateService.GetCertRequestFromCmsString(cert).Result;
+            var result = certificateService.GetCertRequestFromCmsString(cert);
 
             Assert.Pass();
         }

@@ -9,6 +9,6 @@ namespace AktivCA.Application.Contracts.Certificate
     {
         public Task<PemContainerDto> Request(PemContainerDto request);
         public CertValidationResultDto Validate(PemContainerDto pem);
-        public Task<PemContainerDto> RequestIntermediate(PemContainerDto request);
+        public Task<PemCertResponseContainerDto> RequestIntermediate(PemContainerDto request);
     }
 }
