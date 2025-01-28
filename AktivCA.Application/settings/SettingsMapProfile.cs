@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AktivCA.Application.Contracts.Setting;
+﻿using AktivCA.Application.Contracts.Setting;
 using AktivCA.Domain.Settings;
 using AktivCA.Application.Base;
 

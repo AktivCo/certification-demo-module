@@ -3,6 +3,9 @@ services:
     container_name: ${APP_CONTAINER_NAME}
     image: mcr.microsoft.com/dotnet/aspnet:8.0
     tty: true
+    depends_on:
+      certificate-authority-service-db:
+        condition: service_started
     environment:
       - TZ=Europe/Moscow
     volumes:
@@ -10,6 +13,7 @@ services:
       - ${DESTINATION_FOLDER}/var/migrator:/migrator
     ports:
       - ${APP_PORT}:8080
+    command: sh -c "dotnet /migrator/AktivCA.Domain.DbMigrator.dll && cd /app && dotnet AktivCA.Web.dll"
   certificate-authority-service-db:
     container_name: ${DB_CONTAINER_NAME}
     image: postgres:17.2

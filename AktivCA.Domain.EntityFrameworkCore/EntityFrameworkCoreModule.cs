@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AktivCA.Domain.Shared.Module;
-using Microsoft.Extensions.DependencyInjection;
+﻿using AktivCA.Domain.Shared.Module;
 
 namespace AktivCA.Domain.EntityFrameworkCore
 {

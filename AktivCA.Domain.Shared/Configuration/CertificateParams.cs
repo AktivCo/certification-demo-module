@@ -4,8 +4,8 @@
     {
         public bool IsRootCa { get; set; }
         public required string Name { get; set; }
-        public int DurationInYears { get; set; }
-        public int ChildDurationInYears { get; set; }
+        public int RootCertDurationInYears { get; set; }
+        public int UserCertDurationInYears { get; set; }
         public int IntermediateDurationInYears { get; set; }
         public Uri? CaUrl { get; set; }
     }

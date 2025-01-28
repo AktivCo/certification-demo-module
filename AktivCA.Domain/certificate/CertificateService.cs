@@ -15,8 +15,6 @@ using AktivCA.Domain.Settings;
 using AktivCA.Domain.KeyPair;
 using Org.BouncyCastle.Asn1;
 using X509Extension = Org.BouncyCastle.Asn1.X509.X509Extension;
-using System.Runtime.ConstrainedExecution;
-using AktivCA.Domain.Shared.Exceptions;
 using AktivCA.Domain.Shared.Certificate;
 
 namespace AktivCA.Domain.Certificate
@@ -51,23 +49,23 @@ namespace AktivCA.Domain.Certificate
             return request;
         }
 
-        public X509Certificate2 GenerateChildCertByRequest(Pkcs10CertificationRequest request)
+        public async Task<X509Certificate2> GenerateChildCertByRequest(Pkcs10CertificationRequest request)
         {
             request.Verify(request.GetPublicKey());
-            var settings = GetSettings().Result;
+            var settings = await _settingProvider.GetSettingsAsync();
             var keyPair = _keyPairService.GetKeyObjectFromStringKeys(settings.PrivateKey, settings.PublicKey);
-            var caCert = new Org.BouncyCastle.X509.X509CertificateParser().ReadCertificate(X509Certificate2.CreateFromPem(settings.Cert).GetRawCertData());
+            var caCert = new X509CertificateParser().ReadCertificate(X509Certificate2.CreateFromPem(settings.Cert).GetRawCertData());
 
             X509V3CertificateGenerator certificateGenerator = new X509V3CertificateGenerator();
 
             var serialNumber = new Org.BouncyCastle.Math.BigInteger(DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString());
-            var name = String.Format(@"CN={0}", _appSettings.Value.Name);
+            var name = string.Format(@"CN={0}", _appSettings.Value.Name);
 
             var issuerDN = new X509Name(name);
             var subjectDN = request.GetCertificationRequestInfo().Subject;
 
             var notBefore = DateTime.UtcNow.Date;
-            var notAfter = notBefore.AddYears(_appSettings.Value.ChildDurationInYears);
+            var notAfter = notBefore.AddYears(_appSettings.Value.UserCertDurationInYears);
 
             certificateGenerator.SetSerialNumber(serialNumber);
 
@@ -89,17 +87,17 @@ namespace AktivCA.Domain.Certificate
             var x509Certificate = new X509Certificate2(certificate.GetEncoded());
             return x509Certificate;
         }
-        public X509Certificate2 GenerateCertByRequest(Pkcs10CertificationRequest request)
+        public async Task<X509Certificate2> GenerateCertByRequest(Pkcs10CertificationRequest request)
         {
             request.Verify(request.GetPublicKey());
-            var settings = GetSettings().Result;
+            var settings = await _settingProvider.GetSettingsAsync();
             var keyPair = _keyPairService.GetKeyObjectFromStringKeys(settings.PrivateKey, settings.PublicKey);
-            var caCert = new Org.BouncyCastle.X509.X509CertificateParser().ReadCertificate(X509Certificate2.CreateFromPem(settings.Cert).GetRawCertData());
+            var caCert = new X509CertificateParser().ReadCertificate(X509Certificate2.CreateFromPem(settings.Cert).GetRawCertData());
 
             X509V3CertificateGenerator certificateGenerator = new X509V3CertificateGenerator();
             
             var serialNumber = new Org.BouncyCastle.Math.BigInteger(DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString());
-            var name = String.Format(@"CN={0}", _appSettings.Value.Name);
+            var name = string.Format(@"CN={0}", _appSettings.Value.Name);
 
             var issuerDN = new X509Name(name);
             var subjectDN = request.GetCertificationRequestInfo().Subject;
@@ -133,11 +131,11 @@ namespace AktivCA.Domain.Certificate
             X509V3CertificateGenerator certificateGenerator = new X509V3CertificateGenerator();
 
             var serialNumber = new Org.BouncyCastle.Math.BigInteger(DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString());
-            var name = String.Format(@"CN={0}", _appSettings.Value.Name);
+            var name = string.Format(@"CN={0}", _appSettings.Value.Name);
             var subjectDN = new X509Name(name);
             var issuerDN = new X509Name(name);
             var notBefore = DateTime.UtcNow.Date;
-            var notAfter = notBefore.AddYears(_appSettings.Value.DurationInYears);
+            var notAfter = notBefore.AddYears(_appSettings.Value.RootCertDurationInYears);
 
             certificateGenerator.SetSerialNumber(serialNumber);
 
@@ -179,17 +177,7 @@ namespace AktivCA.Domain.Certificate
 
             // На текущий момент определяется CA
             // Создание CSR со специфическими расширениями
-            var extensions = new Dictionary<DerObjectIdentifier, X509Extension>
-            {
-                //{
-                //    X509Extensions.BasicConstraints,
-                //    new X509Extension(true, new DerOctetString(new BasicConstraints(true)))
-                //},
-                //{
-                //    X509Extensions.KeyUsage,
-                //    new X509Extension(true, new DerOctetString(new KeyUsage(KeyUsage.KeyCertSign)))
-                //}
-            };
+            var extensions = new Dictionary<DerObjectIdentifier, X509Extension> {};
 
             var attributes = new DerSet(new AttributePkcs(
                 PkcsObjectIdentifiers.Pkcs9AtExtensionRequest,
@@ -207,11 +195,11 @@ namespace AktivCA.Domain.Certificate
             return csr;
         }
 
-        public CertValidationResult Validate(string certPem)
+        public async Task<CertValidationResult> Validate(string certPem)
         {
             var userCert = X509Certificate2.CreateFromPem(certPem);
-            var settings = _settingProvider.GetSettingsAsync().Result;
-            var issuerCert = X509Certificate2.CreateFromPem(settings.CaCert);
+            var settings = await _settingProvider.GetSettingsAsync();
+            var issuerCert = X509Certificate2.CreateFromPem(settings?.CaCert);
 
             var chain = new X509Chain();
             chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
@@ -236,11 +224,6 @@ namespace AktivCA.Domain.Certificate
             var pem = stringWriter.ToString();
 
             return pem;
-        }
-
-        private async Task<Setting> GetSettings()
-        {
-            return await _settingProvider.GetSettingsAsync();
         }
     }
 }

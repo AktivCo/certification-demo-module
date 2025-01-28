@@ -1,14 +1,10 @@
 using AktivCA.Application.Contracts.Certificate.Dto;
 using AktivCA.Application.Contracts.Certificate;
-using AktivCA.Application.Contracts.Setting;
 using AktivCA.Domain.Certificate;
 using AktivCA.Domain.Settings;
 using AktivCA.Domain.Shared.AutoReg;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Org.BouncyCastle.Pkcs;
 
 namespace AktivCA.Application.Certificate
 {
@@ -29,10 +25,10 @@ namespace AktivCA.Application.Certificate
    
         [Route("request")]
         [HttpPost]
-        public async Task<PemContainerDto> Request([FromBody] PemContainerDto request)
+        public async Task<PemContainerDto> RequestCert([FromBody] PemContainerDto request)
         {
             var certRequest = _certificateService.GetCertRequestFromCmsString(request.Pem);
-            var cert = _certificateService.GenerateChildCertByRequest(certRequest);
+            var cert = await _certificateService.GenerateChildCertByRequest(certRequest);
             var pemCert = cert.ExportCertificatePem();
             return new PemContainerDto() { Pem = pemCert };
         }
@@ -42,7 +38,7 @@ namespace AktivCA.Application.Certificate
         public async Task<PemCertResponseContainerDto> RequestIntermediate([FromBody] PemContainerDto request)
         {
             var certRequest = _certificateService.GetCertRequestFromCmsString(request.Pem);
-            var cert = _certificateService.GenerateCertByRequest(certRequest);
+            var cert = await _certificateService.GenerateCertByRequest(certRequest);
             var pemCert = cert.ExportCertificatePem();
             var settings = await _settingService.GetSettings();
             return new PemCertResponseContainerDto() { Pem = pemCert, CaPem = settings.CaCert };

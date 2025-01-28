@@ -1,4 +1,3 @@
-
 namespace AktivCA.Application.Contracts.Certificate.Dto
 {
     public class CertValidationResultDto

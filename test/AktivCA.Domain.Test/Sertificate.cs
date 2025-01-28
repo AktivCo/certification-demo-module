@@ -1,7 +1,6 @@
 using AktivCA.Domain.Certificate;
 using AktivCA.Test.Base;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 
 namespace AktivCA.Domain.Test
 {

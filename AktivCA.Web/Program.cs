@@ -27,16 +27,6 @@ namespace AktivCA.Web
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            //if (!app.Environment.IsDevelopment())
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //    app.UseHsts();
-            //}
-
-            //TODO: create Startup
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -58,8 +48,6 @@ namespace AktivCA.Web
             InitModules(app.Services, builder.Services);
 
             app.Run();
-
-            
         }
 
         private static void ConfigureServices(IServiceCollection services)
@@ -164,7 +152,6 @@ namespace AktivCA.Web
             RegisterServices(serviceCollection);
             RegisterDBServices(serviceCollection);
             var provider = serviceCollection.BuildServiceProvider();
-            //InitModules(provider);
             return provider;
         }
 

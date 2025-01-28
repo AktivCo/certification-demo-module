@@ -1,5 +1,4 @@
 ﻿using AktivCA.Domain.Shared.AutoReg;
-using Org.BouncyCastle.Crypto;
 
 namespace AktivCA.Domain.Settings
 {

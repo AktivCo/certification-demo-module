@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AktivCA.Domain.Certificate;
-using AktivCA.Domain.KeyPair;
+﻿using AktivCA.Domain.KeyPair;
 using AktivCA.Test.Base;
 using Microsoft.Extensions.DependencyInjection;
 
