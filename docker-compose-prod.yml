@@ -1,0 +1,26 @@
+services:
+  certificate-authority-service:
+    container_name: ${APP_CONTAINER_NAME}
+    image: mcr.microsoft.com/dotnet/aspnet:8.0
+    network_mode: "shared"
+    tty: true
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - ${DESTINATION_FOLDER}/var/app:/app
+      - ${DESTINATION_FOLDER}/var/migrator:/migrator
+    expose:
+      - ${APP_PORT}
+  certificate-authority-service-db:
+    container_name: ${DB_CONTAINER_NAME}
+    image: postgres:17.2
+    network_mode: "shared"
+    environment:
+      POSTGRES_PASSWORD: ${DB_PSWD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    tty: true
+    volumes:
+      - ${DESTINATION_FOLDER}/var/lib/postgresql/data:/var/lib/postgresql/data
+    expose:
+      - ${DB_PORT}
