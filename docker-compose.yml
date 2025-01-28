@@ -2,14 +2,14 @@ services:
   certificate-authority-service:
     container_name: ${APP_CONTAINER_NAME}
     image: mcr.microsoft.com/dotnet/aspnet:8.0
-    restart: always
+    tty: true
     environment:
       - TZ=Europe/Moscow
     volumes:
       - ${DESTINATION_FOLDER}/var/app:/app
+      - ${DESTINATION_FOLDER}/var/migrator:/migrator
     ports:
       - ${APP_PORT}:8080
-    command: cd /app && dotnet AktivCA.Web.dll
   certificate-authority-service-db:
     container_name: ${DB_CONTAINER_NAME}
     image: postgres:17.2
@@ -17,8 +17,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PSWD}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_DB: ${DB_NAME}
-    restart: always
+    tty: true
     volumes:
       - ${DESTINATION_FOLDER}/var/lib/postgresql/data:/var/lib/postgresql/data
-    ports:
-      - ${DB_PORT}:5432
+    expose:
+      - ${DB_PORT}
