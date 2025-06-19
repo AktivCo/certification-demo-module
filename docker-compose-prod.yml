@@ -4,6 +4,9 @@ services:
     image: mcr.microsoft.com/dotnet/aspnet:8.0
     network_mode: "shared"
     tty: true
+    depends_on:
+      certificate-authority-service-db:
+        condition: service_started
     restart: always
     environment:
       - TZ=Europe/Moscow
@@ -12,6 +15,7 @@ services:
       - ${DESTINATION_FOLDER}/var/migrator:/migrator
     expose:
       - ${APP_PORT}
+    command: sh -c "dotnet /migrator/AktivCA.Domain.DbMigrator.dll && cd /app && dotnet AktivCA.Web.dll"
   certificate-authority-service-db:
     container_name: ${DB_CONTAINER_NAME}
     image: postgres:17.2
