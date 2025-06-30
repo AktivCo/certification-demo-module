@@ -1,5 +1,4 @@
 ﻿using AktivCA.Domain.Shared.Module;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace AktivCA.Application
 {

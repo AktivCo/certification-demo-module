@@ -5,9 +5,11 @@ using AktivCA.Domain.Settings;
 using AktivCA.Domain.Shared.AutoReg;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using AktivCA.Application.Attributes;
 
 namespace AktivCA.Application.Certificate
 {
+    [ApiKey]
     [ApiController]
     [Route("certificate")]
     public class CertificateAppService : Controller, ICertificateAppService, ITransientService

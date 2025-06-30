@@ -10,4 +10,8 @@ namespace AktivCA.Domain.Shared.AutoReg
     public interface IScopedService
     {
     }
+
+    public interface ISelfScopedService
+    {
+    }
 }

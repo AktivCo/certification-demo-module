@@ -15,7 +15,7 @@ namespace AktivCA.Web
 {
     public class Program
     {
-        private static readonly Type[] registeredModules = new Type[] { typeof(DomainModule), typeof(ApplicationModule), typeof(EntityFrameworkCoreModule) };
+        private static readonly Type[] registeredModules = [typeof(DomainModule), typeof(ApplicationModule), typeof(EntityFrameworkCoreModule)];
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -93,6 +93,7 @@ namespace AktivCA.Web
                 .AddHttpClient<ICAApiService, CAApiService>(httpClient =>
                 {
                     httpClient.BaseAddress = certParamsSection.GetValue<Uri>(nameof(CertificateParams.CaUrl));
+                    httpClient.DefaultRequestHeaders.Add("X-API-Key", certParamsSection.GetValue<string>(nameof(CertificateParams.ParentCaApiKey)));
                 });
         }
 
@@ -102,6 +103,7 @@ namespace AktivCA.Web
             RegisterTransientServices<ITransientService>(services, registeredModules);
             RegisterSingletonServices<ISingletonService>(services, registeredModules);
             RegisterScopedServices<IScopedService>(services, registeredModules);
+            RegisterSelfScopedServices<ISelfScopedService>(services, registeredModules);
         }
 
         private static void RegisterTransientServicesAsImplementedInterfaces<T>(IServiceCollection services, Type[] moduleTypes)
@@ -135,6 +137,15 @@ namespace AktivCA.Web
               .FromAssembliesOf(moduleTypes)
                 .AddClasses(classes => classes.AssignableTo<T>())
                     .AsMatchingInterface()
+                    .WithScopedLifetime());
+        }
+
+        private static void RegisterSelfScopedServices<T>(IServiceCollection services, Type[] moduleTypes)
+        {
+            services.Scan(scan => scan
+              .FromAssembliesOf(moduleTypes)
+                .AddClasses(classes => classes.AssignableTo<T>())
+                    .AsSelf()
                     .WithScopedLifetime());
         }
 

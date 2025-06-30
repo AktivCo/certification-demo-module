@@ -8,5 +8,7 @@
         public int UserCertDurationInYears { get; set; }
         public int IntermediateDurationInYears { get; set; }
         public Uri? CaUrl { get; set; }
+        public required string CurrentCaApiKey { get; set; }
+        public string? ParentCaApiKey { get; set; }
     }
 }
